@@ -108,8 +108,8 @@
             <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirmar Senha" required>
             <input type="url" name="link" id="link" placeholder="Link do Centro" hidden>
             <input type="text" name="localização" id="local" placeholder="Localização do Centro" hidden>
-            <label for="profile-image">Foto de Perfil:</label>
-            <input type="file" id="profile-image" accept="image/*" required>
+            <label for="profile-image-url">URL da Foto de Perfil:</label>
+            <input type="url" id="profile-image-url" placeholder="https://example.com/image.jpg" required>
             <button type="submit">Criar Conta</button>
         </form>
         <div class="login-link">
@@ -118,75 +118,48 @@
     </div>
 
     <script>
-        function registerAccount(event) {
-            event.preventDefault();
-    
-            const nome = document.getElementById('nome').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const profileImageInput = document.getElementById('profile-image'); // Input da imagem de perfil
-            const isShelter = document.getElementById('doggo').checked; // Verifica o estado do checkbox
-            const userType = isShelter ? 'Centro de Abrigo' : 'Usuário'; // Define o tipo de conta
-            const link = document.getElementById('link').value.trim(); // Obtém o valor do campo link
-            const local = document.getElementById('local').value.trim(); // Obtém o valor do campo localização
-    
-            if (!nome || !email || !password || !confirmPassword) {
-                alert('Por favor, preencha todos os campos.');
-                return;
-            }
-    
-            if (!email.includes('@')) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-    
-            if (password.length < 6) {
-                alert('A senha deve ter pelo menos 6 caracteres.');
-                return;
-            }
-    
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem.');
-                return;
-            }
-    
-            if (profileImageInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const profileImageBase64 = event.target.result;
-    
-                    // Salvar dados no Local Storage
-                    const newUser = { nome, email, password, profileImage: profileImageBase64, userType, link, local };
-                    const users = JSON.parse(localStorage.getItem('users')) || [];
-                    users.push(newUser);
-                    localStorage.setItem('users', JSON.stringify(users));
-    
-                    alert('Conta criada com sucesso como ' + userType + '!');
-                    window.location.href = 'login.html'; // Redireciona para a página de login
-                };
-                reader.readAsDataURL(profileImageInput.files[0]);
-            } else {
-                alert('Por favor, selecione uma imagem de perfil.');
-            }
-        }
-    
-        // Atualizar o texto do tipo de conta em tempo real
-        document.getElementById('doggo').addEventListener('change', function () {
-            const linkInput = document.getElementById('link');
-            const localInput = document.getElementById('local');
-            const userTypeElement = document.getElementById('user-type');
-            
-            if (this.checked) {
-                linkInput.removeAttribute('hidden'); 
-                localInput.removeAttribute('hidden'); 
-                userTypeElement.textContent = 'Tipo de Conta: Centro de Abrigo';
-            } else {
-                linkInput.setAttribute('hidden', true);
-                localInput.setAttribute('hidden', true);
-                userTypeElement.textContent = 'Tipo de Conta: Usuário';
-            }
-        });
+       function registerAccount(event) {
+    event.preventDefault();
+
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const profileImageUrl = document.getElementById('profile-image-url').value.trim(); // Input da URL da imagem de perfil
+    const isShelter = document.getElementById('doggo').checked; // Verifica o estado do checkbox
+    const userType = isShelter ? 'Centro de Abrigo' : 'Usuário'; // Define o tipo de conta
+    const link = document.getElementById('link').value.trim(); // Obtém o valor do campo link
+    const local = document.getElementById('local').value.trim(); // Obtém o valor do campo localização
+
+    if (!nome || !email || !password || !confirmPassword || !profileImageUrl) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    if (!email.includes('@')) {
+        alert('Por favor, insira um email válido.');
+        return;
+    }
+
+    if (password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem.');
+        return;
+    }
+
+    // Salvar dados no Local Storage
+    const newUser = { nome, email, password, profileImage: profileImageUrl, userType, link, local };
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    alert('Conta criada com sucesso como ' + userType + '!');
+    window.location.href = 'login.html'; // Redireciona para a página de login
+}
     </script>
     
 </body>
